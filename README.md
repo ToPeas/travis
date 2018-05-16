@@ -1,6 +1,7 @@
+[![Build Status](https://travis-ci.org/ToPeas/travis.svg?branch=master)](https://travis-ci.org/ToPeas/travis)
 # travis
 
-> '学习travis'
+> 学习travis
 
 ## Build Setup
 
