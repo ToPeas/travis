@@ -1,7 +1,32 @@
-# .travis.yml
-language: node_js   #前端工程所以是JavaScript，编译环境是node_js
+language: node_js
 node_js:
-- '8'   #指定node版本
+- '8'
 branchs:
   only:
-  - master  #指定只有检测到master分支有变动时才执行任务
+  - master
+cache:
+  apt: true
+  yarn: true
+  directories:
+  - node_modules
+before_install:
+- openssl aes-256-cbc -K $encrypted_5474e3bfcbd3_key -iv $encrypted_5474e3bfcbd3_iv
+  -in id_rsa.enc -out ~/.ssh/id_rsa -d
+- chmod 600 ~/.ssh/id_rsa
+# - echo -e "Host 主机IP地址\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+- curl -o- -L https://yarnpkg.com/install.sh | bash
+- export PATH=$HOME/.yarn/bin:$PATH  
+install:
+# 不用yarn的话这里改成 npm i 即可
+- yarn
+script:
+- yarn build
+  # script默认是npm test，如果有yarn.lock文件则会用yarn test
+  # 参考：https://docs.travis-ci.com/user/languages/javascript-with-nodejs/
+- echo "Skipping tests"
+after_success:
+  # 没有修改过端口的，可以用这个，上传目录要加 -r 参数
+  # - scp -o stricthostkeychecking=no -r ./dist 用户@域名或IP:/路径
+- scp -o stricthostkeychecking=no -r ./dist $host_username@$host_ip:/blog/dist
+# 由于我修改了默认的port，所以在这里也进行了加密处理
+# - scp -o stricthostkeychecking=no -P $PORT -r 要上传的文件或目录 用户@域名或IP:/路径
